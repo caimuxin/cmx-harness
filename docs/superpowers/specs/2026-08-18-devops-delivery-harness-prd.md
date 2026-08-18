@@ -1,617 +1,618 @@
-# DevOps Delivery Harness PRD v1.0
+# DevOps 研发交付 Harness PRD v1.0
 
-Date: 2026-08-18
+日期：2026-08-18
 
-## 1. Product Positioning
+## 1. 产品定位
 
-DevOps Delivery Harness is an integrated delivery platform for a single software team. It owns the business delivery loop of requirements, tasks, tests, releases, acceptance, and metrics, while GitHub owns source control, pull requests, code review, GitHub Actions execution, and deployment signals.
+DevOps 研发交付 Harness 是一套面向单研发团队的一体化研发交付平台。平台负责管理需求、任务、测试、发布、验收和度量等业务交付闭环；GitHub 负责代码仓库、分支、提交、Pull Request、代码评审、GitHub Actions 执行和部署状态回写。
 
-Core positioning:
-
-```text
-The platform manages the delivery loop. GitHub executes code collaboration and automation.
-```
-
-The product turns this flow into a governed, traceable, and measurable system:
+核心定位：
 
 ```text
-Requirement -> Clarification -> Review -> Planning -> Tasking -> Branch -> Commit -> Pull Request -> CI/Test -> Release -> Deployment -> Verification -> Acceptance -> Retrospective
+平台管理交付闭环，GitHub 执行代码协作与自动化流水线。
 ```
 
-## 2. Target Users
+平台把以下过程转化为可治理、可追踪、可门禁、可度量的研发交付系统：
 
-The first version is designed for one product engineering team with product, development, testing, and release responsibilities.
+```text
+需求 -> 澄清 -> 评审 -> 排期 -> 任务 -> 分支 -> 提交 -> Pull Request -> CI/测试 -> 发布 -> 部署 -> 验证 -> 验收 -> 复盘
+```
 
-| Role | Primary Needs |
+## 2. 目标用户
+
+第一版面向一个具备产品、研发、测试和发布职责的单研发团队。
+
+| 角色 | 核心诉求 |
 | --- | --- |
-| Product owner | Capture requirements, define value and acceptance criteria, track delivery and business acceptance. |
-| Developer | Pick up tasks, create branches, submit code, handle PR review and CI failures. |
-| Tester | Manage test cases, test plans, defects, regression status, and release quality gates. |
-| Team lead | Track iteration progress, delivery risks, blockers, PR status, and release readiness. |
-| Release owner | Create release tickets, coordinate approval, trigger deployment, verify release, and record rollback. |
-| Business acceptor | Confirm production result and close the requirement. |
-| Delivery manager | Review cycle time, throughput, quality, deployment stability, and bottlenecks. |
+| 产品负责人 | 收集需求，定义业务价值和验收标准，跟踪需求上线和业务验收。 |
+| 开发人员 | 领取任务，创建分支，提交代码，处理 PR 评审和 CI 失败。 |
+| 测试人员 | 管理测试用例、测试计划、缺陷、回归状态和质量门禁。 |
+| 团队负责人 | 跟踪迭代进度、交付风险、阻塞、PR 状态和发布准备情况。 |
+| 发布负责人 | 创建发布单，组织审批，触发部署，验证发布结果，记录回滚。 |
+| 业务验收人 | 确认生产结果，完成业务验收。 |
+| 交付管理者 | 查看周期、吞吐、质量、部署稳定性和流程瓶颈。 |
 
-## 3. Product Goals
+## 3. 产品目标
 
-1. A requirement can be traced from creation to production acceptance.
-2. Each development task can be linked to a GitHub branch, commits, PRs, checks, and deployment results.
-3. Delivery gates prevent unreviewed, untested, or unapproved work from moving forward.
-4. GitHub Actions results are visible in the platform and drive workflow decisions.
-5. Release tickets connect requirements, artifacts, environments, deployment records, verification, and rollback plans.
-6. The team can see where work is blocked and measure delivery performance.
+1. 每个需求都能从创建追踪到生产验收。
+2. 每个研发任务都能关联 GitHub 分支、提交、PR、检查结果和部署结果。
+3. 通过门禁规则阻止未经评审、未经测试、未经审批的工作继续流转。
+4. GitHub Actions 的执行结果能在平台内可见，并驱动流程判断。
+5. 发布单能关联需求、制品、环境、部署记录、验证记录和回滚方案。
+6. 团队能看到工作卡在哪里，并能度量研发交付表现。
 
-## 4. Non-Goals for MVP
+## 4. MVP 非目标
 
-The first version does not include:
+第一版不做以下内容：
 
-1. Multi-team portfolio management.
-2. Complex release train governance.
-3. A self-built Git hosting system.
-4. A self-built CI engine.
-5. Enterprise budget, procurement, or supplier management.
-6. Complex permission matrix for large organizations.
-7. Advanced test asset platform across many teams.
-8. Cross-system architecture governance.
-9. Full AI-generated requirements or full autonomous delivery.
+1. 多团队项目组合管理。
+2. 复杂版本火车治理。
+3. 自研 Git 代码托管系统。
+4. 自研 CI 引擎。
+5. 企业预算、采购、供应商管理。
+6. 大型组织复杂权限矩阵。
+7. 跨团队高级测试资产平台。
+8. 跨系统架构治理。
+9. 全量 AI 自动生成需求或全自动交付。
 
-## 5. End-to-End Workflow
+## 5. 端到端业务流程
 
-### 5.1 Main Flow
-
-```text
-Create requirement
--> Clarify requirement
--> Business review
--> Technical review
--> Plan into iteration
--> Break down tasks
--> Create GitHub branch
--> Develop and commit
--> Open pull request
--> Code review
--> GitHub Actions build and test
--> Quality gate
--> Merge pull request
--> Create release ticket
--> Trigger deployment
--> Production verification
--> Business acceptance
--> Retrospective and metrics
--> Close requirement
-```
-
-### 5.2 Requirement Traceability Chain
-
-Each requirement detail page must display this traceability chain when related data exists:
+### 5.1 主流程
 
 ```text
-Requirement
--> Tasks
--> GitHub Branches
--> Commits
--> Pull Requests
--> Reviews
--> GitHub Actions Runs
--> Check Results
--> Artifacts
--> Release Ticket
--> Deployment
--> Verification
--> Acceptance
--> Retrospective Items
+创建需求
+-> 需求澄清
+-> 业务评审
+-> 技术评审
+-> 进入迭代计划
+-> 拆分研发任务
+-> 创建 GitHub 分支
+-> 开发提交代码
+-> 创建 Pull Request
+-> 代码评审
+-> GitHub Actions 构建与测试
+-> 质量门禁检查
+-> 合并 Pull Request
+-> 创建发布单
+-> 触发部署
+-> 生产验证
+-> 业务验收
+-> 复盘与度量
+-> 关闭需求
 ```
 
-## 6. Functional Modules
+### 5.2 需求追踪链路
 
-### 6.1 Team Workspace
+每个需求详情页都应在存在关联数据时展示完整追踪链路：
 
-The team workspace is the daily home page. It should show:
+```text
+需求
+-> 任务
+-> GitHub 分支
+-> 提交
+-> Pull Request
+-> 代码评审
+-> GitHub Actions 运行记录
+-> 检查结果
+-> 构建制品
+-> 发布单
+-> 部署记录
+-> 生产验证
+-> 业务验收
+-> 复盘项
+```
 
-1. My open requirements.
-2. My tasks.
-3. PRs waiting for review.
-4. Failed or blocked GitHub Actions runs.
-5. Release tickets waiting for approval or verification.
-6. Requirements waiting for acceptance.
-7. Current iteration health.
-8. Delivery blockers and overdue items.
+## 6. 功能模块
 
-### 6.2 Requirement Center
+### 6.1 团队工作台
 
-The requirement center manages the product and business intake loop.
+团队工作台是团队日常入口，需要展示：
 
-Required capabilities:
+1. 我的未关闭需求。
+2. 我的任务。
+3. 等待我评审的 PR。
+4. 失败或阻塞的 GitHub Actions 运行记录。
+5. 等待审批或等待验证的发布单。
+6. 等待验收的需求。
+7. 当前迭代健康度。
+8. 交付阻塞项和逾期事项。
 
-1. Create, edit, archive, and close requirements.
-2. Classify requirement type: business, product, technical, defect, compliance, operations.
-3. Record source, owner, priority, business value, expected benefit, due date, and acceptance criteria.
-4. Link child tasks, test cases, defects, PRs, release tickets, and acceptance records.
-5. Move requirements through the configured state machine.
-6. Show stage duration and blockers.
+### 6.2 需求中心
 
-Required fields:
+需求中心负责管理产品和业务输入。
 
-| Field | Description |
+必须支持：
+
+1. 创建、编辑、归档和关闭需求。
+2. 区分需求类型：业务需求、产品需求、技术需求、缺陷、合规需求、运维需求。
+3. 记录需求来源、负责人、优先级、业务价值、预期收益、期望日期和验收标准。
+4. 关联子任务、测试用例、缺陷、PR、发布单和验收记录。
+5. 按配置的状态机流转需求。
+6. 展示需求在各阶段的停留时间和阻塞信息。
+
+需求核心字段：
+
+| 字段 | 说明 |
 | --- | --- |
-| ID | Stable unique requirement key, such as REQ-001. |
-| Title | Short human-readable title. |
-| Type | Business, product, technical, defect, compliance, operations. |
-| Source | Business, product, customer, incident, regulator, engineering. |
-| Owner | Product or requirement owner. |
-| Priority | P0, P1, P2, P3. |
-| Business value | Why the team should do this. |
-| Acceptance criteria | Conditions for acceptance. |
-| Target date | Expected date, not delivery commitment. |
-| Status | Current requirement status. |
-| Linked iteration | Planned iteration, if any. |
-| Linked release | Release ticket, if any. |
+| ID | 稳定唯一需求编号，例如 REQ-001。 |
+| 标题 | 简短、可读的需求名称。 |
+| 类型 | 业务需求、产品需求、技术需求、缺陷、合规需求、运维需求。 |
+| 来源 | 业务、产品、客户、事故、监管、研发等。 |
+| 负责人 | 产品或需求 owner。 |
+| 优先级 | P0、P1、P2、P3。 |
+| 业务价值 | 为什么要做这个需求。 |
+| 验收标准 | 需求完成的判断条件。 |
+| 目标日期 | 期望日期，不等同于交付承诺。 |
+| 状态 | 当前需求状态。 |
+| 关联迭代 | 需求所属迭代。 |
+| 关联发布 | 需求所属发布单。 |
 
-### 6.3 Review Center
+### 6.3 评审中心
 
-The review center supports business and technical review before development starts.
+评审中心支持需求进入开发前的业务评审和技术评审。
 
-Business review checks:
+业务评审检查项：
 
-1. Business value is clear.
-2. User or business scenario is clear.
-3. Scope is clear.
-4. Out-of-scope items are explicit.
-5. Acceptance criteria are testable.
+1. 业务价值是否清楚。
+2. 用户或业务场景是否清楚。
+3. 范围是否清楚。
+4. 不做什么是否明确。
+5. 验收标准是否可测试。
 
-Technical review checks:
+技术评审检查项：
 
-1. Technical feasibility is confirmed.
-2. Architecture impact is understood.
-3. Dependencies are identified.
-4. Risks are recorded.
-5. Rough effort estimate is provided.
-6. Test and release implications are understood.
+1. 技术可行性是否确认。
+2. 架构影响是否识别。
+3. 依赖关系是否识别。
+4. 技术风险是否记录。
+5. 粗略工作量是否给出。
+6. 测试和发布影响是否明确。
 
-Review results:
-
-```text
-Approved
-Rejected
-Needs supplement
-Deferred
-```
-
-### 6.4 Iteration and Planning
-
-Planning connects approved requirements to delivery capacity.
-
-Required capabilities:
-
-1. Create iterations with start date, end date, goal, and capacity.
-2. Add approved requirements to an iteration.
-3. Break requirements into tasks.
-4. Assign owners and due dates.
-5. Show planned work, completed work, blocked work, and spillover.
-6. Detect unreviewed requirements being added to an iteration.
-
-### 6.5 Task Center
-
-Tasks are executable units of engineering work.
-
-Required capabilities:
-
-1. Create development, testing, documentation, deployment, or investigation tasks under a requirement.
-2. Assign owner, estimate, due date, and status.
-3. Create a GitHub branch from a task.
-4. Link commits and PRs back to the task.
-5. Move task status based on GitHub events and manual actions.
-
-Task statuses:
+评审结论：
 
 ```text
-Todo -> In Progress -> Waiting for Code Review -> Waiting for Build -> Waiting for Test -> Done
+通过
+驳回
+需补充
+延期
 ```
 
-Exception statuses:
+### 6.4 迭代与计划
+
+计划模块把已评审需求和团队交付容量连接起来。
+
+必须支持：
+
+1. 创建迭代，维护开始日期、结束日期、迭代目标和团队容量。
+2. 将已通过评审的需求加入迭代。
+3. 将需求拆分为研发任务。
+4. 分配负责人和计划完成日期。
+5. 展示计划工作、已完成工作、阻塞工作和结转工作。
+6. 发现未评审需求被加入迭代时给出提醒或阻断。
+
+### 6.5 任务中心
+
+任务是研发执行的最小管理单元。
+
+必须支持：
+
+1. 在需求下创建开发、测试、文档、部署、调研等任务。
+2. 维护负责人、估算、计划日期和状态。
+3. 从任务创建 GitHub 分支。
+4. 将提交和 PR 回写到任务。
+5. 根据 GitHub 事件和人工操作推动任务状态流转。
+
+任务状态：
 
 ```text
-Blocked
-Returned
-Cancelled
+待处理 -> 进行中 -> 待代码评审 -> 待构建 -> 待测试 -> 已完成
 ```
 
-### 6.6 GitHub Integration
-
-The GitHub integration connects delivery objects with code collaboration and automation.
-
-Required capabilities:
-
-1. Install and configure a GitHub App. OAuth can be added later for user-level convenience, but the MVP integration authority should be a GitHub App.
-2. Bind a project to one GitHub repository for MVP.
-3. Create a branch from a task.
-4. Enforce branch naming convention:
+异常状态：
 
 ```text
-<type>/<requirement-id>-<task-id>-short-title
+阻塞
+退回
+取消
 ```
 
-Example:
+### 6.6 GitHub 集成
+
+GitHub 集成负责连接平台内的交付对象和 GitHub 的代码协作、自动化能力。
+
+必须支持：
+
+1. 安装并配置 GitHub App。OAuth 可作为后续用户级便利能力，MVP 的集成授权以 GitHub App 为主。
+2. MVP 阶段一个项目绑定一个 GitHub 仓库。
+3. 从任务创建 GitHub 分支。
+4. 执行分支命名规范：
+
+```text
+<类型>/<需求编号>-<任务编号>-简短标题
+```
+
+示例：
 
 ```text
 feature/REQ-001-TASK-003-login-rate-limit
 ```
 
-5. Sync commits that reference requirement or task IDs.
-6. Sync pull request title, status, reviewers, review state, labels, checks, and merge state.
-7. Sync GitHub Actions workflow runs and check results.
-8. Sync deployment status when GitHub Deployments are used.
-9. Store raw external IDs for reconciliation.
+5. 同步包含需求编号或任务编号的提交。
+6. 同步 Pull Request 标题、状态、评审人、评审状态、标签、检查结果和合并状态。
+7. 同步 GitHub Actions workflow run 和 check result。
+8. 使用 GitHub Deployments 时同步部署状态。
+9. 保存 GitHub 外部对象 ID，便于对账和重试。
 
-### 6.7 Pipeline Center
+### 6.7 流水线中心
 
-The pipeline center shows GitHub Actions runs and quality gate status.
+流水线中心展示 GitHub Actions 运行记录和质量门禁状态。
 
-Required capabilities:
+必须支持：
 
-1. Display latest workflow runs for a branch or PR.
-2. Show run status: queued, in progress, success, failure, cancelled.
-3. Show failed job and step summary when available.
-4. Link run results to PRs, tasks, requirements, and release tickets.
-5. Support retry action when GitHub permissions allow it.
-6. Feed build and test results into gates.
+1. 展示分支或 PR 最新 workflow run。
+2. 展示运行状态：排队中、运行中、成功、失败、取消。
+3. 在可获取时展示失败 job 和 step 摘要。
+4. 将流水线结果关联到 PR、任务、需求和发布单。
+5. 在 GitHub 权限允许时支持重新运行。
+6. 将构建和测试结果输入门禁判断。
 
-### 6.8 Test Center
+### 6.8 测试中心
 
-Testing is part of the delivery loop, not a disconnected final phase.
+测试不是开发后的孤立阶段，而是交付闭环的一部分。
 
-Required capabilities:
+必须支持：
 
-1. Create test cases linked to requirements.
-2. Create test plans for an iteration or release.
-3. Record manual test execution results.
-4. Import or sync automated test results from GitHub Actions.
-5. Create defects linked to requirements, tasks, test cases, and PRs.
-6. Mark defects as blocking or non-blocking.
-7. Prevent release readiness when blocking defects are open.
+1. 创建并维护关联需求的测试用例。
+2. 为迭代或发布创建测试计划。
+3. 记录手工测试执行结果。
+4. 从 GitHub Actions 导入或同步自动化测试结果。
+5. 创建关联需求、任务、测试用例和 PR 的缺陷。
+6. 标记缺陷是否为阻塞缺陷。
+7. 存在阻塞缺陷时阻止发布准备完成。
 
-Test result states:
-
-```text
-Not Run
-Passed
-Failed
-Blocked
-Skipped
-```
-
-Defect states:
+测试结果状态：
 
 ```text
-Open -> In Progress -> Fixed -> Verified -> Closed
+未执行
+通过
+失败
+阻塞
+跳过
 ```
 
-### 6.9 Release Center
-
-The release center manages controlled production change.
-
-Required capabilities:
-
-1. Create release tickets.
-2. Select requirements included in the release.
-3. Link PRs, artifacts, deployment runs, test plans, and defects.
-4. Record release environment, release window, approvers, and rollback plan.
-5. Run pre-release gate checks.
-6. Trigger GitHub Actions deployment workflow when configured.
-7. Sync deployment status.
-8. Record release verification.
-9. Record rollback if needed.
-
-Release ticket statuses:
+缺陷状态：
 
 ```text
-Draft -> Waiting for Approval -> Waiting for Deployment -> Deploying -> Waiting for Verification -> Released -> Closed
+新建 -> 处理中 -> 已修复 -> 已验证 -> 已关闭
 ```
 
-Exception statuses:
+### 6.9 发布中心
+
+发布中心负责生产变更的受控管理。
+
+必须支持：
+
+1. 创建发布单。
+2. 选择本次发布包含的需求。
+3. 关联 PR、制品、部署运行、测试计划和缺陷。
+4. 记录发布环境、发布窗口、审批人和回滚方案。
+5. 执行发布前门禁检查。
+6. 在已配置时触发 GitHub Actions 部署 workflow。
+7. 同步部署状态。
+8. 记录生产验证结果。
+9. 在需要时记录回滚。
+
+发布单状态：
 
 ```text
-Rejected
-Deployment Failed
-Rolled Back
-Cancelled
+草稿 -> 待审批 -> 待部署 -> 部署中 -> 待验证 -> 已发布 -> 已关闭
 ```
 
-### 6.10 Acceptance and Retrospective
-
-Acceptance closes the business loop after production verification.
-
-Required capabilities:
-
-1. Record production verification result.
-2. Record business acceptance result against acceptance criteria.
-3. Capture unfinished or failed acceptance items.
-4. Convert failed acceptance items into defects or new requirements.
-5. Record retrospective items with owner and follow-up date.
-
-Acceptance results:
+异常状态：
 
 ```text
-Accepted
-Rejected
-Partially Accepted
-Needs Follow-Up
+已驳回
+部署失败
+已回滚
+已取消
 ```
 
-### 6.11 Metrics Center
+### 6.10 验收与复盘
 
-The metrics center helps the team inspect flow, quality, and stability.
+验收用于关闭上线后的业务闭环。
 
-MVP metrics:
+必须支持：
 
-| Category | Metrics |
+1. 记录生产验证结果。
+2. 按验收标准记录业务验收结果。
+3. 捕获未完成或验收失败项。
+4. 将验收失败项转为缺陷或新需求。
+5. 记录复盘项、负责人和跟进日期。
+
+验收结果：
+
+```text
+通过
+不通过
+部分通过
+需跟进
+```
+
+### 6.11 度量中心
+
+度量中心帮助团队查看流动效率、质量和稳定性。
+
+MVP 指标：
+
+| 类别 | 指标 |
 | --- | --- |
-| Flow | Requirement cycle time, stage duration, waiting time. |
-| Development | Task cycle time, PR open-to-merge time, review waiting time. |
-| Build | Build success rate, failed runs, mean time to fix build. |
-| Test | Test pass rate, blocking defects, reopened defects. |
-| Release | Deployment frequency, release success rate, rollback rate. |
-| Delivery | Requirement throughput, on-time rate, acceptance pass rate. |
+| 流动效率 | 需求总周期、阶段停留时间、等待时间。 |
+| 开发效率 | 任务完成周期、PR 创建到合并周期、评审等待时间。 |
+| 构建质量 | 构建成功率、失败运行次数、构建平均修复时间。 |
+| 测试质量 | 测试通过率、阻塞缺陷数、重开缺陷数。 |
+| 发布稳定性 | 部署频率、发布成功率、回滚率。 |
+| 交付结果 | 需求吞吐量、准时率、验收通过率。 |
 
-### 6.12 Configuration Center
+### 6.12 配置中心
 
-The configuration center controls workflow rules and integrations.
+配置中心负责流程规则和集成配置。
 
-Required capabilities:
+必须支持：
 
-1. Configure requirement states and allowed transitions.
-2. Configure gate rules.
-3. Configure GitHub repository binding.
-4. Configure default branch naming.
-5. Configure GitHub Actions workflows used for build, test, and deploy.
-6. Configure team roles.
+1. 配置需求状态和允许的状态流转。
+2. 配置门禁规则。
+3. 配置 GitHub 仓库绑定。
+4. 配置默认分支命名规范。
+5. 配置用于构建、测试和部署的 GitHub Actions workflow。
+6. 配置团队角色。
 
-## 7. State Machines
+## 7. 状态机
 
-### 7.1 Requirement State Machine
-
-```text
-Draft
--> Waiting for Clarification
--> Waiting for Business Review
--> Waiting for Technical Review
--> Waiting for Planning
--> Planned
--> In Development
--> In Testing
--> Waiting for Release
--> Released
--> Waiting for Acceptance
--> Closed
-```
-
-Exception states:
+### 7.1 需求状态机
 
 ```text
-Needs Supplement
-Blocked
-Suspended
-Cancelled
-Rejected
+草稿
+-> 待澄清
+-> 待业务评审
+-> 待技术评审
+-> 待排期
+-> 已排期
+-> 开发中
+-> 测试中
+-> 待发布
+-> 已发布
+-> 待验收
+-> 已关闭
 ```
 
-### 7.2 Task State Machine
+异常状态：
 
 ```text
-Todo
--> In Progress
--> Waiting for Code Review
--> Waiting for Build
--> Waiting for Test
--> Done
+需补充
+阻塞
+挂起
+取消
+驳回
 ```
 
-Exception states:
+### 7.2 任务状态机
 
 ```text
-Blocked
-Returned
-Cancelled
+待处理
+-> 进行中
+-> 待代码评审
+-> 待构建
+-> 待测试
+-> 已完成
 ```
 
-### 7.3 Release State Machine
+异常状态：
 
 ```text
-Draft
--> Waiting for Approval
--> Waiting for Deployment
--> Deploying
--> Waiting for Verification
--> Released
--> Closed
+阻塞
+退回
+取消
 ```
 
-Exception states:
+### 7.3 发布状态机
 
 ```text
-Rejected
-Deployment Failed
-Rolled Back
-Cancelled
+草稿
+-> 待审批
+-> 待部署
+-> 部署中
+-> 待验证
+-> 已发布
+-> 已关闭
 ```
 
-## 8. Gate Rules
+异常状态：
 
-### 8.1 Requirement Development Gate
+```text
+已驳回
+部署失败
+已回滚
+已取消
+```
 
-A requirement can enter development only when:
+## 8. 门禁规则
 
-1. Business value is filled.
-2. Acceptance criteria are filled.
-3. Business review is approved.
-4. Technical review is approved.
-5. Requirement is planned into an iteration.
+### 8.1 需求进入开发门禁
 
-### 8.2 Pull Request Merge Gate
+需求进入开发前必须满足：
 
-A PR can be marked ready to merge only when:
+1. 已填写业务价值。
+2. 已填写验收标准。
+3. 业务评审已通过。
+4. 技术评审已通过。
+5. 需求已进入迭代计划。
 
-1. PR is linked to a requirement and task.
-2. At least one reviewer has approved it.
-3. Required GitHub Actions checks have succeeded.
-4. Automated tests have passed.
-5. No blocking defect is linked to the task or requirement.
+### 8.2 Pull Request 合并门禁
 
-The platform may show gate status but GitHub branch protection remains the source of truth for actual merge blocking in MVP.
+PR 标记为可合并前必须满足：
 
-### 8.3 Release Gate
+1. PR 已关联需求和任务。
+2. 至少 1 名评审人已通过。
+3. 必需的 GitHub Actions 检查已成功。
+4. 自动化测试已通过。
+5. 任务或需求下没有阻塞缺陷。
 
-A release ticket can be deployed only when:
+MVP 阶段，平台负责计算并展示门禁状态；真正阻止合并的硬约束仍由 GitHub Branch Protection 承担。
 
-1. Release approval is complete.
-2. All included requirements have passed testing.
-3. Blocking defects count is zero.
-4. Artifact or commit SHA is selected.
-5. Deployment environment is selected.
-6. Rollback plan is filled.
+### 8.3 发布门禁
 
-### 8.4 Requirement Closure Gate
+发布单进入部署前必须满足：
 
-A requirement can be closed only when:
+1. 发布审批已完成。
+2. 发布包含的需求均已测试通过。
+3. 阻塞缺陷数量为 0。
+4. 已选择制品版本或 commit SHA。
+5. 已选择部署环境。
+6. 已填写回滚方案。
 
-1. Production verification has passed.
-2. Business acceptance has passed or an explicit exception is recorded.
-3. Release result is recorded.
-4. Metrics are available for the requirement.
+### 8.4 需求关闭门禁
 
-## 9. GitHub Event Mapping
+需求关闭前必须满足：
 
-The platform should handle these GitHub events in MVP:
+1. 生产验证已通过。
+2. 业务验收已通过，或已记录明确例外原因。
+3. 发布结果已记录。
+4. 需求相关度量数据已生成。
 
-| GitHub Event | Platform Reaction |
+## 9. GitHub 事件映射
+
+MVP 需要处理以下 GitHub 事件：
+
+| GitHub 事件 | 平台动作 |
 | --- | --- |
-| push | Link commits to branch, task, and requirement when IDs match. |
-| pull_request.opened | Create or update PR link under task and requirement. |
-| pull_request.synchronize | Refresh commits and check state. |
-| pull_request.closed | Mark PR merged or closed. Update task if appropriate. |
-| pull_request_review.submitted | Update review gate. |
-| check_run.completed | Update CI/check result. |
-| workflow_run.completed | Update workflow result and pipeline view. |
-| deployment_status | Update deployment record and release ticket. |
-| release.published | Optionally link GitHub Release to release ticket. |
+| push | 当编号匹配时，将提交关联到分支、任务和需求。 |
+| pull_request.opened | 在任务和需求下创建或更新 PR 关联。 |
+| pull_request.synchronize | 刷新提交和检查状态。 |
+| pull_request.closed | 标记 PR 已合并或已关闭，并在合适时更新任务状态。 |
+| pull_request_review.submitted | 更新代码评审门禁。 |
+| check_run.completed | 更新 CI 或检查结果。 |
+| workflow_run.completed | 更新 workflow 结果和流水线视图。 |
+| deployment_status | 更新部署记录和发布单。 |
+| release.published | 可选关联 GitHub Release 到发布单。 |
 
-ID matching rules:
+编号匹配规则：
 
-1. Requirement IDs and task IDs in branch names must be parsed.
-2. Requirement IDs and task IDs in PR titles must be parsed.
-3. Requirement IDs and task IDs in commit messages should be parsed as fallback.
-4. Manual linking must be available when automatic matching fails.
+1. 必须解析分支名中的需求编号和任务编号。
+2. 必须解析 PR 标题中的需求编号和任务编号。
+3. 可将提交信息中的需求编号和任务编号作为兜底匹配方式。
+4. 自动匹配失败时必须支持人工关联。
 
-## 10. Permissions
+## 10. 权限模型
 
-MVP roles:
+MVP 角色：
 
-| Role | Permissions |
+| 角色 | 权限 |
 | --- | --- |
-| Admin | Configure project, GitHub integration, gates, roles. |
-| Product owner | Manage requirements, reviews, acceptance. |
-| Developer | Manage own tasks, create branches, link PRs, view gates. |
-| Tester | Manage test cases, test plans, defects, test results. |
-| Release owner | Manage release tickets, approvals, deployment, rollback records. |
-| Viewer | Read-only access. |
+| 管理员 | 配置项目、GitHub 集成、门禁和角色。 |
+| 产品负责人 | 管理需求、评审和验收。 |
+| 开发人员 | 管理自己的任务，创建分支，关联 PR，查看门禁。 |
+| 测试人员 | 管理测试用例、测试计划、缺陷和测试结果。 |
+| 发布负责人 | 管理发布单、审批、部署和回滚记录。 |
+| 只读用户 | 查看平台数据，无编辑权限。 |
 
-## 11. MVP Pages
+## 11. MVP 页面
 
-1. Team workspace.
-2. Requirement list.
-3. Requirement detail.
-4. Review detail.
-5. Iteration board.
-6. Task detail.
-7. GitHub integration settings.
-8. PR and pipeline status view.
-9. Test plan and defect view.
-10. Release ticket detail.
-11. Acceptance detail.
-12. Metrics dashboard.
-13. Gate rule settings.
+1. 团队工作台。
+2. 需求列表。
+3. 需求详情。
+4. 评审详情。
+5. 迭代看板。
+6. 任务详情。
+7. GitHub 集成配置。
+8. PR 与流水线状态视图。
+9. 测试计划与缺陷视图。
+10. 发布单详情。
+11. 验收详情。
+12. 度量看板。
+13. 门禁规则配置。
 
-## 12. Key User Stories
+## 12. 关键用户故事
 
-### 12.1 Requirement Owner
+### 12.1 产品负责人
 
-As a product owner, I want to create a requirement with value and acceptance criteria so that the team can review and plan it.
+作为产品负责人，我希望创建带有业务价值和验收标准的需求，以便团队可以评审和排期。
 
-As a product owner, I want to see every task, PR, build, test, release, and acceptance record linked to my requirement so that I know whether it is truly done.
+作为产品负责人，我希望在需求详情中看到关联任务、PR、构建、测试、发布和验收记录，以便判断需求是否真正完成。
 
-### 12.2 Developer
+### 12.2 开发人员
 
-As a developer, I want to create a GitHub branch directly from a task so that my code is traceable to the requirement.
+作为开发人员，我希望可以从任务直接创建 GitHub 分支，以便代码天然可追溯到需求。
 
-As a developer, I want to see PR review and GitHub Actions failures in the platform so that I can fix blocked work quickly.
+作为开发人员，我希望在平台中看到 PR 评审和 GitHub Actions 失败信息，以便快速处理阻塞。
 
-### 12.3 Tester
+### 12.3 测试人员
 
-As a tester, I want to link test cases and defects to requirements so that release readiness reflects actual quality.
+作为测试人员，我希望把测试用例和缺陷关联到需求，以便发布准备状态能真实反映质量。
 
-As a tester, I want automated test results from GitHub Actions to update test status so that I do not have to duplicate status manually.
+作为测试人员，我希望 GitHub Actions 的自动化测试结果能回写测试状态，以便减少重复录入。
 
-### 12.4 Release Owner
+### 12.4 发布负责人
 
-As a release owner, I want a release ticket to show included requirements, artifacts, test status, approval, deployment, and rollback plan so that production change is controlled.
+作为发布负责人，我希望发布单能展示包含需求、制品、测试状态、审批、部署和回滚方案，以便生产变更受控。
 
-As a release owner, I want deployment results from GitHub to update the release ticket so that release status is accurate.
+作为发布负责人，我希望 GitHub 的部署结果能更新发布单，以便发布状态准确。
 
-### 12.5 Team Lead
+### 12.5 团队负责人
 
-As a team lead, I want to see blocked requirements, failed builds, slow PRs, open blocking defects, and releases waiting for verification so that I can remove bottlenecks.
+作为团队负责人，我希望看到阻塞需求、失败构建、缓慢 PR、未关闭阻塞缺陷和待验证发布，以便及时移除瓶颈。
 
-## 13. MVP Acceptance Criteria
+## 13. MVP 验收标准
 
-The MVP is successful when:
+MVP 达成标准：
 
-1. A user can create a requirement, review it, plan it, break it into tasks, and close it after acceptance.
-2. A user can connect one GitHub repository to the platform.
-3. A user can create a GitHub branch from a task.
-4. The platform can sync commits, PRs, reviews, and GitHub Actions status.
-5. The platform can show PR and CI gate status against a task and requirement.
-6. A tester can create test cases, record results, and create blocking defects.
-7. A release owner can create a release ticket, include requirements, check gates, trigger or record deployment, verify production, and close the release.
-8. A requirement detail page can display the end-to-end traceability chain.
-9. A metrics page can show flow, PR, build, test, and release metrics for the team.
-10. Gate failures are visible and explain what must be fixed.
+1. 用户可以创建需求、完成评审、进入计划、拆分任务，并在验收后关闭需求。
+2. 用户可以连接一个 GitHub 仓库。
+3. 用户可以从任务创建 GitHub 分支。
+4. 平台可以同步提交、PR、评审和 GitHub Actions 状态。
+5. 平台可以在任务和需求上展示 PR 与 CI 门禁状态。
+6. 测试人员可以创建测试用例、记录测试结果，并创建阻塞缺陷。
+7. 发布负责人可以创建发布单、纳入需求、检查门禁、触发或记录部署、完成生产验证并关闭发布。
+8. 需求详情页可以展示端到端追踪链路。
+9. 度量页面可以展示团队流动、PR、构建、测试和发布指标。
+10. 门禁失败时，平台能说明失败原因和需要修复的内容。
 
-## 14. Suggested Implementation Slices
+## 14. 建议实施切片
 
-### Slice 1: Requirement and Task Loop
+### 切片 1：需求与任务闭环
 
-Build requirement center, task center, iteration board, and basic states.
+建设需求中心、任务中心、迭代看板和基础状态机。
 
-### Slice 2: GitHub Connection
+### 切片 2：GitHub 连接
 
-Bind repository, create branches from tasks, sync commits and PRs.
+绑定仓库，从任务创建分支，同步提交和 PR。
 
-### Slice 3: CI and Gate Visibility
+### 切片 3：CI 与门禁可视化
 
-Sync GitHub Actions checks and show gate status.
+同步 GitHub Actions 检查结果，展示门禁状态。
 
-### Slice 4: Test and Defect Loop
+### 切片 4：测试与缺陷闭环
 
-Add test cases, test plans, defects, and blocking quality rules.
+增加测试用例、测试计划、缺陷和阻塞质量规则。
 
-### Slice 5: Release and Deployment Loop
+### 切片 5：发布与部署闭环
 
-Add release tickets, release gates, deployment status, verification, and rollback records.
+增加发布单、发布门禁、部署状态、生产验证和回滚记录。
 
-### Slice 6: Acceptance and Metrics
+### 切片 6：验收与度量
 
-Add business acceptance, retrospective items, and the MVP metrics dashboard.
+增加业务验收、复盘项和 MVP 度量看板。
 
-## 15. Product Defaults for Implementation Planning
+## 15. 实施计划默认决策
 
-The following defaults are selected for implementation planning:
+后续实施计划按以下默认决策展开：
 
-1. Product shape: deployable web app.
-2. Team scope: one team, one project, one GitHub repository for MVP.
-3. GitHub integration model: GitHub App.
-4. Deployment trigger: GitHub Actions workflow_dispatch when configured.
-5. Deployment status source: GitHub deployment_status events when available, otherwise workflow run status.
-6. CI engine: GitHub Actions only for MVP.
-7. Merge enforcement: GitHub branch protection remains the hard enforcement layer; the platform calculates and displays delivery gates.
-8. Backend and frontend stack: to be selected in the implementation plan according to the existing workspace or project constraints.
-9. Database: to be selected in the implementation plan, with a relational model preferred because the product has strongly linked workflow objects.
+1. 产品形态：可部署 Web 应用。
+2. 团队范围：MVP 阶段一个团队、一个项目、一个 GitHub 仓库。
+3. GitHub 集成方式：GitHub App。
+4. 部署触发方式：配置后通过 GitHub Actions workflow_dispatch 触发。
+5. 部署状态来源：优先使用 GitHub deployment_status 事件；没有时使用 workflow run 状态。
+6. CI 引擎：MVP 仅支持 GitHub Actions。
+7. 合并硬约束：GitHub Branch Protection 是实际阻断层；平台负责计算和展示交付门禁。
+8. 前后端技术栈：实施计划阶段结合现有工程约束选择。
+9. 数据库：实施计划阶段选择，优先采用关系型模型，因为产品对象之间存在强关联。
+

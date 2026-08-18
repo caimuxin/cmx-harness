@@ -1,0 +1,9 @@
+.DS_Store
+.worktrees/
+.superpowers/
+node_modules/
+dist/
+build/
+.env
+.env.local
+
