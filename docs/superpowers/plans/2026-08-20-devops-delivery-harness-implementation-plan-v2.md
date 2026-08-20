@@ -6,7 +6,7 @@
 
 **架构：** 平台内建需求、任务、测试、发布、验收、度量等业务对象；GitHub 负责代码仓库、分支、提交、PR、代码评审、GitHub Actions 和部署状态。实施过程按需求到上线闭环推进，每个任务都必须保留源头、评审、开发、测试、发布、验收和复盘痕迹。
 
-**技术栈：** 待工程初始化任务确定。默认建议为可部署 Web 应用、关系型数据库、GitHub App 集成、GitHub Actions 作为 CI/CD 执行引擎。
+**技术栈：** 已由 HARN-001 确定并人工确认，权威依据 `docs/trace/ARCHITECTURE.md`：Next.js 15（App Router）全栈单体 + TypeScript strict + Prisma 6/SQLite→PostgreSQL + node:test/tsx + node-cron + octokit + ESLint/Prettier。
 
 **Spec：** `docs/superpowers/specs/2026-08-20-devops-delivery-harness-prd-v2.md`
 

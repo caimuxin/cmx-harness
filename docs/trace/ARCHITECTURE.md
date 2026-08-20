@@ -1,8 +1,8 @@
 # CMX Harness 技术选型与架构决策（Architecture Decision）
 
 - 日期：2026-08-20
-- 状态：active（当前有效）
-- 来源：PRD v2（`docs/superpowers/specs/2026-08-20-devops-delivery-harness-prd-v2.md`）、HARN-001 留痕
+- 状态：active（已确认，2026-08-20 人工确认通过）
+- 来源：PRD v2（`docs/superpowers/specs/2026-08-20-devops-delivery-harness-prd-v2.md`）、HARN-001 留痕、2026-08-20 人工确认（ESLint+Prettier、node-cron、octokit 三项落定）
 - 权威性：本文档是后续所有阶段（HARN-002 起）的技术依据；与实施计划冲突时，以本文档和 PRD v2 为准。
 
 ---
@@ -28,9 +28,9 @@
 | 数据库 | SQLite（本地）→ PostgreSQL（生产） | Prisma 6 | PRD 19.9 关系型优先；切库只改 datasource |
 | ORM | Prisma | 6.19.x | 类型化 schema；迁移；已验证 |
 | 测试 | Node 内置 test runner + tsx | tsx 4.x | CLAUDE.md 约束（不用 Jest/Mocha）；已验证 |
-| 后台任务 | node-cron | 待定（阶段 2 加） | 对账/超时调度 |
-| GitHub 集成 | GitHub App + Webhook + octokit | octokit 待定（阶段 4 加） | PRD 11、R-1/R-10 |
-| 代码规范 | ESLint + Prettier | 待定（阶段 2 加） | 阶段 1 未加，建议补 |
+| 后台任务 | node-cron | 已定（阶段 5 加） | 对账/超时调度 |
+| GitHub 集成 | GitHub App + Webhook + octokit | octokit 已定（阶段 4 加） | PRD 11、R-1/R-10 |
+| 代码规范 | ESLint + Prettier | 已定（阶段 2 起执行） | 阶段 1 未加，阶段 2 补 |
 
 ## 3. 分层架构
 
@@ -76,7 +76,7 @@ app → modules → domain →（无依赖）
 | 阶段 | 技术影响 |
 | --- | --- |
 | 阶段 2（HARN-002 领域模型） | 建 `src/domain/`：实体 + 状态机 + 门禁为纯 TS 函数，零框架依赖，直接 `node --test` 测试 |
-| 阶段 2（HARN-003/004 需求/评审） | 建 `src/modules/requirements`、`src/modules/reviews`；API 放 `src/app/api/` |
+| 阶段 2（HARN-003/004 需求/评审） | 建 `src/modules/requirements`、`src/modules/reviews`；API 放 `src/app/api/`；引入 ESLint + Prettier（已定） |
 | 阶段 4（HARN-006 GitHub） | 建 `src/integrations/github/`，加 octokit；Webhook 幂等 + 对账 |
 | 阶段 5（HARN-008 对账） | 加 node-cron 定时任务 |
 | 阶段 6（HARN-010 发布） | 部署多源汇总逻辑在 domain，触发在 integrations/github |
