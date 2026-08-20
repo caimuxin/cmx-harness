@@ -1,0 +1,21 @@
+// CMX Harness - Prisma 数据模型
+// 本文件为 HARN-001 最小骨架；完整领域模型（需求/任务/发布状态机等）由 HARN-002 扩展。
+// 仓库绑定模型遵循 PRD 19.10：数据层 1:N，MVP 仅暴露 1:1（见 PRD R-11）。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 项目（MVP 单项目）
+model Project {
+  id            String   @id @default(cuid())
+  name          String
+  githubRepo    String? // 绑定的 GitHub 仓库 "owner/repo"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
