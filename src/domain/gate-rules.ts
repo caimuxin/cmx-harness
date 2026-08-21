@@ -135,7 +135,10 @@ export function evaluateRequirementClose(input: {
 // ---- 门禁辅助：从领域对象聚合输入 ------------------------------------------
 
 /** 从评审记录判断业务/技术评审是否通过（按需求聚合最新结论） */
-export function reviewApproved(reviews: Review[], kind: 'business' | 'tech'): boolean {
+export function reviewApproved(
+  reviews: Array<{ kind: string; conclusion: string }>,
+  kind: 'business' | 'tech',
+): boolean {
   const kindReviews = reviews.filter((r) => r.kind === kind)
   if (kindReviews.length === 0) return false
   // 最新一次评审结论为「通过」即视为通过
@@ -155,15 +158,15 @@ export function requirementsTestedPassed(tasks: Task[]): boolean {
 }
 
 /** 需求是否有关联发布记录（10.4-3） */
-export function hasReleaseRecorded(release?: ReleaseTicket): boolean {
+export function hasReleaseRecorded(release?: { status?: string }): boolean {
   return release !== undefined && release.status !== '草稿'
 }
 
 /** 需求关闭门禁输入聚合（生产验证+业务验收来自验收记录） */
 export function requirementCloseInput(
-  req: Requirement,
-  acceptance?: Acceptance,
-  release?: ReleaseTicket,
+  req: { releaseId?: string | null },
+  acceptance?: { productionVerified?: boolean; result?: string; id?: string },
+  release?: { status?: string },
   metricsReady = false,
   metricsInsufficientData = false,
 ) {
