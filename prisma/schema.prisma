@@ -36,6 +36,7 @@ model Requirement {
   status            String // RequirementStatus
   iterationId       String?
   releaseId         String?
+  iteration         Iteration?    @relation(fields: [iterationId], references: [id])
   transitions       Transition[]
   reviews           Review[]
   tasks             Task[]
@@ -82,13 +83,14 @@ model Review {
 
 // ---- 迭代（PRD 8.4） ----
 model Iteration {
-  id        String   @id @default(cuid())
-  name      String
-  startDate DateTime
-  endDate   DateTime
-  goal      String?
-  capacity  Int?
-  createdAt DateTime @default(now())
+  id           String        @id @default(cuid())
+  name         String
+  startDate    DateTime
+  endDate      DateTime
+  goal         String?
+  capacity     Int?
+  requirements Requirement[]
+  createdAt    DateTime      @default(now())
 }
 
 // ---- 任务（PRD 8.5、9.2） ----
@@ -106,8 +108,8 @@ model Task {
   defects       Defect[]
 
   requirement Requirement @relation(fields: [requirementId], references: [id])
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 // ---- 测试（PRD 8.8） ----
