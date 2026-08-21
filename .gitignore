@@ -9,6 +9,8 @@ dist/
 # Prisma
 prisma/dev.db
 prisma/dev.db-journal
+prisma/test.db
+prisma/test.db-journal
 
 # Env
 .env
@@ -16,6 +18,12 @@ prisma/dev.db-journal
 
 # Build / test output
 coverage/
+*.tsbuildinfo
+
+# dev.sh 运行时产物
+.dev-server.pid
+.dev-server.port
+.dev-server.log
 
 # OS
 .DS_Store
