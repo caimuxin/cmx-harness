@@ -1,6 +1,7 @@
 // CMX Harness - Prisma 数据模型
-// 本文件为 HARN-001 最小骨架；完整领域模型（需求/任务/发布状态机等）由 HARN-002 扩展。
-// 仓库绑定模型遵循 PRD 19.10：数据层 1:N，MVP 仅暴露 1:1（见 PRD R-11）。
+// HARN-002：领域对象持久化模型（需求/任务/评审/迭代/测试/缺陷/发布/部署/验收/复盘）
+// 状态与枚举存储为 String，与 src/domain/models.ts 枚举值严格一致。
+// 状态流转留痕（I-5）：每类业务对象都有 Transition 关联记录。
 
 generator client {
   provider = "prisma-client-js"
@@ -13,9 +14,187 @@ datasource db {
 
 // 项目（MVP 单项目）
 model Project {
+  id         String   @id @default(cuid())
+  name       String
+  githubRepo String? // 绑定的 GitHub 仓库 "owner/repo"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ---- 需求（PRD 8.2） ----
+model Requirement {
+  id                String         @id @default(cuid())
+  code              String         @unique // 稳定唯一编号，例如 REQ-001
+  title             String
+  type              String // 需求类型（RequirementType）
+  source            String // 需求来源（RequirementSource）
+  owner             String
+  priority          String // P0~P3
+  businessValue     String? // 业务价值（10.1-1）
+  acceptanceCriteria String? // 验收标准（10.1-2）
+  targetDate        DateTime?
+  status            String // RequirementStatus
+  iterationId       String?
+  releaseId         String?
+  transitions       Transition[]
+  reviews           Review[]
+  tasks             Task[]
+  testCases         TestCase[]
+  defects           Defect[]
+  acceptances       Acceptance[]
+  retroItems        RetrospectiveItem[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// ---- 状态流转留痕（I-5） ----
+model Transition {
   id            String   @id @default(cuid())
-  name          String
-  githubRepo    String? // 绑定的 GitHub 仓库 "owner/repo"
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  actor         String
+  from          String
+  to            String
+  reason        String
+  at            DateTime @default(now())
+  requirementId String?
+  taskId        String?
+  releaseId     String?
+  defectId      String?
+
+  requirement Requirement? @relation(fields: [requirementId], references: [id])
+  task        Task?        @relation(fields: [taskId], references: [id])
+  release     ReleaseTicket? @relation(fields: [releaseId], references: [id])
+  defect      Defect?      @relation(fields: [defectId], references: [id])
+}
+
+// ---- 评审（PRD 8.3） ----
+model Review {
+  id            String   @id @default(cuid())
+  requirementId String
+  kind          String // business | tech
+  conclusion    String // ReviewConclusion
+  reviewer      String
+  checklist     String // JSON: Record<string, boolean>
+  comment       String?
+  at            DateTime @default(now())
+
+  requirement Requirement @relation(fields: [requirementId], references: [id])
+}
+
+// ---- 迭代（PRD 8.4） ----
+model Iteration {
+  id        String   @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  goal      String?
+  capacity  Int?
+  createdAt DateTime @default(now())
+}
+
+// ---- 任务（PRD 8.5、9.2） ----
+model Task {
+  id            String   @id @default(cuid())
+  code          String   @unique // 例如 TASK-001
+  requirementId String
+  title         String
+  type          String // TaskType
+  assignee      String?
+  estimate      Float?
+  plannedDate   DateTime?
+  status        String // TaskStatus
+  transitions   Transition[]
+  defects       Defect[]
+
+  requirement Requirement @relation(fields: [requirementId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+// ---- 测试（PRD 8.8） ----
+model TestCase {
+  id            String   @id @default(cuid())
+  requirementId String
+  title         String
+  expected      String?
+  result        String? // TestResultStatus
+
+  requirement Requirement @relation(fields: [requirementId], references: [id])
+}
+
+model TestPlan {
+  id          String   @id @default(cuid())
+  title       String
+  iterationId String?
+  releaseId   String?
+  caseIds     String // JSON: string[]
+}
+
+// ---- 缺陷（PRD 8.8） ----
+model Defect {
+  id            String   @id @default(cuid())
+  requirementId String
+  taskId        String?
+  testCaseId    String?
+  prId          String? // 外部 PR 编号
+  title         String
+  blocking      Boolean  @default(false)
+  status        String // DefectStatus
+  transitions   Transition[]
+
+  requirement Requirement @relation(fields: [requirementId], references: [id])
+  task       Task?        @relation(fields: [taskId], references: [id])
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+// ---- 发布（PRD 8.9、9.3） ----
+model ReleaseTicket {
+  id             String    @id @default(cuid())
+  code           String    @unique // 例如 REL-001
+  title          String
+  requirementIds String // JSON: string[]
+  environment    String?
+  artifact       String?
+  approver       String?
+  rollbackPlan   String?
+  status         String // ReleaseStatus
+  transitions    Transition[]
+  deployments    Deployment[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// ---- 部署（PRD 8.9，多源汇总 R-6） ----
+model Deployment {
+  id          String   @id @default(cuid())
+  releaseId   String
+  environment String?
+  status      String
+  source      String // DeploymentSource：deployment_status事件 | workflow run | 人工记录
+  at          DateTime @default(now())
+
+  release ReleaseTicket @relation(fields: [releaseId], references: [id])
+}
+
+// ---- 验收与复盘（PRD 8.10） ----
+model Acceptance {
+  id                String   @id @default(cuid())
+  requirementId     String
+  result            String // AcceptanceResult
+  productionVerified Boolean @default(false)
+  verifier          String
+  at                DateTime @default(now())
+
+  requirement Requirement @relation(fields: [requirementId], references: [id])
+}
+
+model RetrospectiveItem {
+  id            String   @id @default(cuid())
+  requirementId String
+  content       String
+  owner         String
+  followUpDate  DateTime?
+  done          Boolean  @default(false)
+
+  requirement Requirement @relation(fields: [requirementId], references: [id])
 }
