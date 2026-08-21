@@ -1,7 +1,8 @@
 /**
  * HARN-003 需求中心服务测试（PRD 8.2、9.1、10.1）
  *
- * 使用独立测试数据库（DATABASE_URL=file:./test.db），测试前重置 schema。
+ * 使用独立测试数据库（DATABASE_URL=file:./test-req.db），测试前重置 schema。
+ * 每个访问 DB 的测试文件使用独立数据库文件，避免跨文件编号互相污染。
  * 服务层通过 @/shared/lib/prisma 单例访问 DB；本测试文件在进程启动时
  * 手动设置 DATABASE_URL 并触发单例创建（必须最先 import prisma 单例）。
  *
@@ -18,16 +19,16 @@ import { execSync } from 'node:child_process'
 import path from 'node:path'
 
 // 必须先设置 DATABASE_URL 再导入 prisma 单例
-process.env.DATABASE_URL = 'file:./test.db'
+process.env.DATABASE_URL = 'file:./test-req.db'
 
 import { prisma } from '../../../src/shared/lib/prisma'
 
 before(async () => {
   // 重置测试数据库：删除独立测试库文件后重建 schema（避免污染 dev.db）
   // Prisma 检测到 agent 环境会拒绝 --force-reset，故直接删文件走 db push。
-  const dbPath = path.resolve(process.cwd(), 'prisma/test.db')
+  const dbPath = path.resolve(process.cwd(), 'prisma/test-req.db')
   execSync(`rm -f "${dbPath}" && npx prisma db push --skip-generate`, {
-    env: { ...process.env, DATABASE_URL: 'file:./test.db' },
+    env: { ...process.env, DATABASE_URL: 'file:./test-req.db' },
     cwd: path.resolve(process.cwd()),
     stdio: 'pipe',
   })
@@ -140,10 +141,13 @@ test('进入开发门禁：补齐全部条件后可进入开发', async () => {
   assert.equal(gates.enterDev.passed, false)
   assert.equal(gates.enterDev.checks.find((c: { id: string }) => c.id === '10.1-5')!.satisfied, false)
 
-  // 排期后进入开发成功
+  // 排期后进入开发成功（创建真实迭代后关联，避免外键违反）
+  const iter = await prisma.iteration.create({
+    data: { name: '迭代-测试', startDate: new Date('2026-08-01'), endDate: new Date('2026-08-14') },
+  })
   await prisma.requirement.update({
     where: { code: 'REQ-001' },
-    data: { iterationId: 'iter-1' },
+    data: { iterationId: iter.id },
   })
   await transitionRequirement(prisma, 'REQ-001', '已排期', { actor: 'alice', reason: '排期完成' })
   await transitionRequirement(prisma, 'REQ-001', '开发中', { actor: 'alice', reason: '门禁通过，开始开发' })
